@@ -15,14 +15,10 @@ class CreateMahasiswaTable extends Migration
     {
         Schema::create('mahasiswa', function (Blueprint $table) {
             $table->id();
-            $table->string('nim', 10)->index();
+            $table->string('nim', 10)->primary();
             $table->string('nama', 50)->index();
             $table->string('kelas', 5);
             $table->string('jurusan', 35);
-            //menambahkan 3 kolom 
-            //  $table->string('email', 100);
-            //  $table->string('alamat', 25);
-            //  $table->date('tanggal_lahir');
              $table->timestamps();
         });
        
