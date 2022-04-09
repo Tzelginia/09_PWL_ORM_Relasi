@@ -21,13 +21,14 @@
     <p>{{ $message }}</p>
 </div>
 @endif
+@if ($mahasiswa->count())
 <table class="table table-bordered">
     <tr>
         <th>Nim</th>
         <th>Nama</th>
         <th>Kelas</th>
         <th>Jurusan</th>
-        <th width="280px">Action</th>
+        <th width="300">Action</th>
     </tr>
     @foreach ($mahasiswa as $mhs)
     <tr>
@@ -42,9 +43,14 @@
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger">Delete</button>
+                <a class="btn btn-warning" href="{{ route('nilai',$mhs->nim) }}">Nilai</a>
             </form>
         </td>
     </tr>
     @endforeach
+    @else
+    <p class="text-center fs-4">Mahasiswa tidak ditemukan.</p>
+    @endif
 </table>
+{{$mahasiswa->links()}}
 @endsection
