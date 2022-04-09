@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
-use App\Models\Kelas;
 use Illuminate\Support\Facades\DB;
+use App\Models\Kelas;
+use App\Models\Mahasiswa_Matakuliah;
+use Illuminate\Support\Facades\Mail;
+use PhpParser\Node\Expr\New_;
+
 
 class MahasiswaController extends Controller
 {
@@ -24,7 +28,7 @@ class MahasiswaController extends Controller
         // return view('mahasiswa.index', compact('mahasiswa'))-> with('i', (request()
         // ->input('page', 1) - 1) * 5); 
         $mahasiswa = Mahasiswa::with('kelas')->get();
-        $mahasiswa = Mahasiswa::orderBy('nim', 'desc')->paginate(6);      
+        $mahasiswa = Mahasiswa::orderBy('nim', 'desc')->paginate(3);     
         return view('mahasiswa.index', compact('mahasiswa'))-> with('i', (request()
         ->input('page', 1) - 1) * 5); 
 
@@ -49,21 +53,16 @@ class MahasiswaController extends Controller
     'nama' => 'required',
     'kelas' => 'required',
     'jurusan' => 'required', 
-    //menambah 3 kolom pada controller
-    // 'Email' => ['required', 'Email:dns'],
-    // 'Alamat' => 'required',
-    // 'tanggal_lahir' => 'required',
     ]);
-    $mahasiswa = new Mahasiswa;
+    $mahasiswa = new Mahasiswa();
     $mahasiswa->nim = $request->get('nim');
     $mahasiswa->nama = $request->get('nama');
+    $mahasiswa->kelas_id = $request->get('kelas');
     $mahasiswa->jurusan = $request->get('jurusan');
-    
-    $kelas = new Kelas;
-    $kelas->id=$request->get('kelas');
-
-    $mahasiswa->kelas()->associate($kelas);
     $mahasiswa->save();
+    // $kelas = new Kelas;
+    // $kelas->id=$request->get('kelas');
+    // $mahasiswa->kelas()->associate($kelas);
     //fungsi eloquent untuk menambah data
     // Mahasiswa::create($request->all());
    
@@ -84,7 +83,7 @@ class MahasiswaController extends Controller
         //menampilkan detail data dengan menemukan/berdasarkan Nim Mahasiswa
         // $Mahasiswa = Mahasiswa::find($nim);
         $Mahasiswa = Mahasiswa::with('kelas')->where('nim',$nim)->first();
-        return view('mahasiswa.detail', compact('Mahasiswa'));
+        return view('mahasiswa.detail', ['Mahasiswa' =>$Mahasiswa]);
     }
 
     /**
@@ -98,8 +97,8 @@ class MahasiswaController extends Controller
         //menampilkan detail data dengan menemukan berdasarkan Nim Mahasiswa untuk diedit
 //         $Mahasiswa = DB::table('mahasiswa')->where('nim', $nim)->first();;
 //  return view('mahasiswa.edit', compact('Mahasiswa'));
-$Mahasiswa = Mahasiswa::with('kelas')->where('nim', $nim)->first();
-$kelas= Kelas::all();
+        $Mahasiswa = Mahasiswa::with('kelas')->where('nim', $nim)->first();
+        $kelas= Kelas::all();
         return view('mahasiswa.edit', compact('Mahasiswa','kelas'));
     }
 
@@ -127,13 +126,12 @@ $kelas= Kelas::all();
     $mahasiswa = Mahasiswa::with('kelas')->where('nim', $nim)->first();
     $mahasiswa->nim=$request->get('nim');
     $mahasiswa->nama=$request->get('nama');
+    $mahasiswa->kelas_id=$request->get('kelas');
     $mahasiswa->jurusan=$request->get('jurusan');
-
-    $kelas=new Kelas;
-    $kelas->id=$request->get('kelas');
-
-    $mahasiswa->kelas()->associate($kelas);
     $mahasiswa->save();
+    // $kelas=new Kelas;
+    // $kelas->id=$request->get('kelas');
+    // $mahasiswa->kelas()->associate($kelas);
    //fungsi eloquent untuk mengupdate data inputan kita
     // Mahasiswa::find($nim)->update($request->all());
    //jika data berhasil diupdate, akan kembali ke halaman utama
@@ -160,5 +158,12 @@ $kelas= Kelas::all();
         $keyword = $request->search;
         $mahasiswa = Mahasiswa::where('nama', 'like', "%" . $keyword . "%")->paginate(3);
         return view('mahasiswa.index', compact('mahasiswa'))->with('i', (request()->input('page', 1) - 1) * 5);
+    }
+    public function nilai($nim)
+    {
+        // Join relasi ke mahasiswa dan mata kuliah
+        $list = Mahasiswa_Matakuliah::with("matakuliah")->where("mahasiswa_id", $nim)->get();
+        $list->mahasiswa = Mahasiswa::with('kelas')->where("nim", $nim)->first();
+        return view('mahasiswa.nilai', compact('list'));
     }
 }
