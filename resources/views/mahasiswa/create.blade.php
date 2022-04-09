@@ -39,18 +39,6 @@
                         <input type="jurusan" name="jurusan" class="form-control" id="jurusan"
                             ariadescribedby="jurusan">
                     </div>
-                    <!-- menambah 3 kolom pada view create -->
-                    <!-- <div class="form-group">
-                        <label for="Email">Email</label>
-                        <input type="Email" name="Email" class="form-control" id="Email" aria-describedby="Email">
-                    </div>
-                    <div class="form-group">
-                        <label for="Alamat">Alamat</label>
-                        <input type="Alamat" name="Alamat" class="form-control" id="Alamat" ariadescribedby="Alamat">
-                    </div>
-                    <div class="form-group">
-                        <label for="tanggal_lahir">Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir" class="form-control" id="tanggal_lahir" ariadescribedby="tanggal_lahir"> -->
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
