@@ -10,7 +10,7 @@
         </div>
         <div class="row mb-2">
             <ul class="" style="list-style-type: none;">
-               
+
                 <li class=""><b>Nama: </b>{{$list->mahasiswa->nama}}</li>
                 <li class=""><b>Nim: </b>{{$list->mahasiswa->nim}}</li>
                 <li class=""><b>Kelas: </b>{{$list->mahasiswa->kelas->nama_kelas}}</li>
@@ -45,6 +45,7 @@
                 @endforeach
             </tbody>
         </table>
+        <a class="btn btn-success mt3" href="{{ route('mahasiswa.index') }}">Kembali</a>
     </div>
 </div>
 @endsection

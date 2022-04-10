@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class MahasiswaController extends Controller
     public function index()
     {
         //fungsi eloquent menampilkan data menggunakan pagination 
-    //    $mahasiswa = $mahasiswa = DB::table('mahasiswa')->get(); // Mengambil semua isi tabel
+        //    $mahasiswa = $mahasiswa = DB::table('mahasiswa')->get(); // Mengambil semua isi tabel
         //paginate 3 mahaiswa
         // $mahasiswa = $mahasiswa = DB::table('mahasiswa')->paginate(3);
         // // Mengambil semua isi tabel 
@@ -28,10 +29,9 @@ class MahasiswaController extends Controller
         // return view('mahasiswa.index', compact('mahasiswa'))-> with('i', (request()
         // ->input('page', 1) - 1) * 5); 
         $mahasiswa = Mahasiswa::with('kelas')->get();
-        $mahasiswa = Mahasiswa::orderBy('nim', 'desc')->paginate(3);     
-        return view('mahasiswa.index', compact('mahasiswa'))-> with('i', (request()
-        ->input('page', 1) - 1) * 5); 
-
+        $mahasiswa = Mahasiswa::orderBy('nim', 'desc')->paginate(3);
+        return view('mahasiswa.index', compact('mahasiswa'))->with('i', (request()
+            ->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -42,34 +42,32 @@ class MahasiswaController extends Controller
     public function create()
     {
         $kelas = Kelas::all(); //mendapatkan data dari tabel kelas
-    return view('mahasiswa.create', ['kelas'=>$kelas]);
-    
+        return view('mahasiswa.create', ['kelas' => $kelas]);
     }
     public function store(Request $request)
     {
-    // melakukan validasi data
-    $request->validate([
-    'nim' => 'required',
-    'nama' => 'required',
-    'kelas' => 'required',
-    'jurusan' => 'required', 
-    ]);
-    $mahasiswa = new Mahasiswa();
-    $mahasiswa->nim = $request->get('nim');
-    $mahasiswa->nama = $request->get('nama');
-    $mahasiswa->kelas_id = $request->get('kelas');
-    $mahasiswa->jurusan = $request->get('jurusan');
-    $mahasiswa->save();
-    // $kelas = new Kelas;
-    // $kelas->id=$request->get('kelas');
-    // $mahasiswa->kelas()->associate($kelas);
-    //fungsi eloquent untuk menambah data
-    // Mahasiswa::create($request->all());
-   
-        //jika data berhasil ditambahkan, akan kembali ke halaman utama
- return redirect()->route('mahasiswa.index')
- ->with('success', 'Mahasiswa Berhasil Ditambahkan');
- }
+        // melakukan validasi data
+        $request->validate([
+            'nim' => 'required',
+            'nama' => 'required',
+            'kelas' => 'required',
+            'jurusan' => 'required',
+        ]);
+        $mahasiswa = new Mahasiswa();
+        $mahasiswa->nim = $request->get('nim');
+        $mahasiswa->nama = $request->get('nama');
+        $mahasiswa->kelas_id = $request->get('kelas');
+        $mahasiswa->jurusan = $request->get('jurusan');
+        $mahasiswa->save();
+        // $kelas = new Kelas;
+        // $kelas->id=$request->get('kelas');
+        // $mahasiswa->kelas()->associate($kelas);
+        //fungsi eloquent untuk menambah data
+        // Mahasiswa::create($request->all());
+
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Mahasiswa Berhasil Ditambahkan');
+    }
 
 
     /**
@@ -78,12 +76,12 @@ class MahasiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show( $nim)
+    public function show($nim)
     {
         //menampilkan detail data dengan menemukan/berdasarkan Nim Mahasiswa
         // $Mahasiswa = Mahasiswa::find($nim);
-        $Mahasiswa = Mahasiswa::with('kelas')->where('nim',$nim)->first();
-        return view('mahasiswa.detail', ['Mahasiswa' =>$Mahasiswa]);
+        $Mahasiswa = Mahasiswa::with('kelas')->where('nim', $nim)->first();
+        return view('mahasiswa.detail', ['Mahasiswa' => $Mahasiswa]);
     }
 
     /**
@@ -92,14 +90,14 @@ class MahasiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit( $nim)
+    public function edit($nim)
     {
         //menampilkan detail data dengan menemukan berdasarkan Nim Mahasiswa untuk diedit
-//         $Mahasiswa = DB::table('mahasiswa')->where('nim', $nim)->first();;
-//  return view('mahasiswa.edit', compact('Mahasiswa'));
+        //         $Mahasiswa = DB::table('mahasiswa')->where('nim', $nim)->first();;
+        //  return view('mahasiswa.edit', compact('Mahasiswa'));
         $Mahasiswa = Mahasiswa::with('kelas')->where('nim', $nim)->first();
-        $kelas= Kelas::all();
-        return view('mahasiswa.edit', compact('Mahasiswa','kelas'));
+        $kelas = Kelas::all();
+        return view('mahasiswa.edit', compact('Mahasiswa', 'kelas'));
     }
 
     /**
@@ -111,32 +109,32 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, $nim)
     {
-   //melakukan validasi data
-    $request->validate([
-    'nim' => 'required',
-    'nama' => 'required',
-    'kelas' => 'required',
-    'jurusan' => 'required',
-     //menambah 3 kolom pada controller
-    //  'Email' => ['required', 'Email:dns'],
-    //  'Alamat' => 'required',
-    //  'tanggal_lahir' => 'required',
-    ]);
+        //melakukan validasi data
+        $request->validate([
+            'nim' => 'required',
+            'nama' => 'required',
+            'kelas' => 'required',
+            'jurusan' => 'required',
+            //menambah 3 kolom pada controller
+            //  'Email' => ['required', 'Email:dns'],
+            //  'Alamat' => 'required',
+            //  'tanggal_lahir' => 'required',
+        ]);
 
-    $mahasiswa = Mahasiswa::with('kelas')->where('nim', $nim)->first();
-    $mahasiswa->nim=$request->get('nim');
-    $mahasiswa->nama=$request->get('nama');
-    $mahasiswa->kelas_id=$request->get('kelas');
-    $mahasiswa->jurusan=$request->get('jurusan');
-    $mahasiswa->save();
-    // $kelas=new Kelas;
-    // $kelas->id=$request->get('kelas');
-    // $mahasiswa->kelas()->associate($kelas);
-   //fungsi eloquent untuk mengupdate data inputan kita
-    // Mahasiswa::find($nim)->update($request->all());
-   //jika data berhasil diupdate, akan kembali ke halaman utama
-    return redirect()->route('mahasiswa.index')
-    ->with('success', 'Mahasiswa Berhasil Diupdate');
+        $mahasiswa = Mahasiswa::with('kelas')->where('nim', $nim)->first();
+        $mahasiswa->nim = $request->get('nim');
+        $mahasiswa->nama = $request->get('nama');
+        $mahasiswa->kelas_id = $request->get('kelas');
+        $mahasiswa->jurusan = $request->get('jurusan');
+        $mahasiswa->save();
+        // $kelas=new Kelas;
+        // $kelas->id=$request->get('kelas');
+        // $mahasiswa->kelas()->associate($kelas);
+        //fungsi eloquent untuk mengupdate data inputan kita
+        // Mahasiswa::find($nim)->update($request->all());
+        //jika data berhasil diupdate, akan kembali ke halaman utama
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Mahasiswa Berhasil Diupdate');
     }
 
     /**
@@ -148,9 +146,9 @@ class MahasiswaController extends Controller
     public function destroy($nim)
     {
         //fungsi eloquent untuk menghapus data
-        Mahasiswa::where('nim',$nim)->delete();
+        Mahasiswa::where('nim', $nim)->delete();
         return redirect()->route('mahasiswa.index')
-            -> with('success', 'Mahasiswa Berhasil Dihapus');  
+            ->with('success', 'Mahasiswa Berhasil Dihapus');
     }
     //menambakan fungsi search
     public function search(Request $request)
@@ -161,7 +159,6 @@ class MahasiswaController extends Controller
     }
     public function nilai($nim)
     {
-        // Join relasi ke mahasiswa dan mata kuliah
         $list = Mahasiswa_Matakuliah::with("matakuliah")->where("mahasiswa_id", $nim)->get();
         $list->mahasiswa = Mahasiswa::with('kelas')->where("nim", $nim)->first();
         return view('mahasiswa.nilai', compact('list'));
