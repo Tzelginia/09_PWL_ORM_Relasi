@@ -28,22 +28,21 @@
                     </div>
                     <div class="form-group">
                         <label for="kelas">Kelas</label>
-                       <select class="form-control" name="kelas">
-                           @foreach($kelas as $kls)
-                           <option value="{{$kls->id}}">{{$kls->nama_kelas}}</option>
-                           @endforeach
-                       </select>
+                        <select class="form-control" name="kelas">
+                            @foreach($kelas as $kls)
+                            <option value="{{$kls->id}}">{{$kls->nama_kelas}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="jurusan">Jurusan</label>
-                        <input type="jurusan" name="jurusan" class="form-control" id="jurusan"
-                            ariadescribedby="jurusan">
+                        <input type="jurusan" name="jurusan" class="form-control" id="jurusan" ariadescribedby="jurusan">
                     </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
             </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
     </div>
+</div>
 </div>
 @endsection
