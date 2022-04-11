@@ -22,9 +22,6 @@ class Mahasiswa extends Model
         'nama',
         'kelas_id',
         'jurusan',
-        'Email',
-        'Alamat',
-        'tanggal_lahir',
     ];
     public function kelas()
     {
